@@ -1,20 +1,22 @@
-import express, {Request, Response} from "express";
+import express from "express";
+import { middlewareLogResponses } from './middleware/logging.js';
+import { middlewareMetricsInc } from "./middleware/MetricsInc.js";
+import { handlerReadiness } from "./handler/health.js";
+import { handlerResetRequestsCount, handlerWriteRequestsCount } from "./handler/metrics.js";
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - core
 
-const app = express();
 const PORT = 8080;
+const app = express();
 
-app.use('/app', express.static("./src/app"));
+app.use(middlewareLogResponses);
+app.use('/app', middlewareMetricsInc, express.static("./src/app"));
 
-
-function handlerReadiness(req: Request, res: Response) {
-  res.set("Content-Type", "text/plain; charset=utf-8");
-  res.send("OK");
-}
 
 app.get("/healthz", handlerReadiness);
+app.get("/metrics", handlerWriteRequestsCount);
+app.get("/reset", handlerResetRequestsCount);
 
 
 

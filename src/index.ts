@@ -9,14 +9,17 @@ import { handlerResetRequestsCount, handlerWriteRequestsCount } from "./handler/
 
 const PORT = 8080;
 const app = express();
+const apiPath = "/api";
+const appPath = "/app";
+const adminPath = "/admin";
 
 app.use(middlewareLogResponses);
-app.use('/app', middlewareMetricsInc, express.static("./src/app"));
+app.use(appPath, middlewareMetricsInc, express.static("./src/app"));
 
 
-app.get("/healthz", handlerReadiness);
-app.get("/metrics", handlerWriteRequestsCount);
-app.get("/reset", handlerResetRequestsCount);
+app.get(apiPath + "/healthz", handlerReadiness);
+app.get(adminPath + "/metrics", handlerWriteRequestsCount);
+app.get(adminPath + "/reset", handlerResetRequestsCount);
 
 
 

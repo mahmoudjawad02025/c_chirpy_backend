@@ -6,6 +6,7 @@ import { handlerResetRequestsCount, handlerWriteRequestsCount } from "./handler/
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json' with { type: "json" };
 import { handlerValidateChirp } from "./handler/chirps.js";
+import { errorHandler } from "./middleware/error.js";
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - core
@@ -30,6 +31,7 @@ app.post(adminPath + "/reset", handlerResetRequestsCount);
 app.post(apiPath + "/validate_chirp", handlerValidateChirp);
 
 
+app.use(errorHandler);
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - listen
 
 

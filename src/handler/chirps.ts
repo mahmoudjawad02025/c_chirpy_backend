@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { BadRequestError } from "../middleware/error.js";
 
 
 export function handlerValidateChirp(req: Request, res: Response) {
@@ -10,7 +11,8 @@ export function handlerValidateChirp(req: Request, res: Response) {
         return res.status(400).json({ error: "Something went wrong" } as ResponseData);
 
     if(parsed.body.length > 140)
-        return res.status(400).json({ error: "Chirp is too long" } as ResponseData);
+        // return res.status(400).json({ error: "Chirp is too long" } as ResponseData);
+        throw new BadRequestError("Chirp is too long. Max length is 140");
 
     const cleanedBody = parsed.body.trim().split(' ')
         .map(w => {

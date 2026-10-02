@@ -5,14 +5,16 @@ import { handlerReadiness } from "./handler/health.js";
 import { handlerResetRequestsCount, handlerWriteRequestsCount } from "./handler/metrics.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json' with { type: "json" };
-import { handlerValidateChirp } from "./handler/chirps.js";
+import { handlerCreateChirp, handlerGetChirpById, handlerGetChirps } from "./handler/chirps.js";
 import { errorHandler } from "./middleware/error.js";
+import "./db/index.js";
+import { config } from "./config.js";
+import { handlerCreateUser } from "./handler/users.js";
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - core
 
 
-const PORT = 8080;
 const apiPath = "/api";
 const appPath = "/app";
 const adminPath = "/admin";
@@ -28,13 +30,16 @@ app.use(express.json()); // Built-in JSON body parsing middleware
 app.get(apiPath + "/healthz", handlerReadiness);
 app.get(adminPath + "/metrics", handlerWriteRequestsCount);
 app.post(adminPath + "/reset", handlerResetRequestsCount);
-app.post(apiPath + "/validate_chirp", handlerValidateChirp);
+app.post(apiPath + "/users", handlerCreateUser);
+app.post(apiPath + "/chirps", handlerCreateChirp);
+app.get(apiPath + "/chirps", handlerGetChirps); 
+app.get(apiPath + "/chirps/:chirpId", handlerGetChirpById); 
 
 
 app.use(errorHandler);
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - listen
 
 
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+app.listen(config.api.port, () => {
+  console.log(`Server is running at http://localhost:${config.api.port}`);
 });

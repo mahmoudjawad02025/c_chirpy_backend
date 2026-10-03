@@ -37,9 +37,17 @@ export async function handlerCreateChirp(req: Request, res: Response) {
 }
 
 
-export async function handlerGetChirps(req: Request, res: Response) {
-    const result = await getChirps();
 
+export async function handlerGetChirps(req: Request, res: Response) {
+    const authorId = req.query.authorId;
+    const sort = req.query.sort === "desc" ? "desc" : "asc";
+    let result = null;
+    if(typeof authorId === 'string' && authorId){
+        result = await getChirps(authorId, sort);
+    }
+    else{
+        result = await getChirps(undefined, sort);
+    }
     return res.status(200).json(result);
 }
 

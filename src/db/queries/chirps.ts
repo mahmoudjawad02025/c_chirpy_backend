@@ -18,8 +18,12 @@ export async function clearChirps() {
 }
 
 
-export async function getChirps() {
-  const result = await db.select().from(chirps).orderBy(chirps.createdAt);
+export async function getChirps(authorId?: string, sort: "asc" | "desc" = "asc") {
+  const result = 
+  authorId?
+    await db.select().from(chirps).where(eq(chirps.userId, authorId)).orderBy(sort === "asc" ? chirps.createdAt : desc(chirps.createdAt))
+  :
+    await db.select().from(chirps).orderBy(sort === "asc" ? chirps.createdAt : desc(chirps.createdAt));
   return result;
 }
 

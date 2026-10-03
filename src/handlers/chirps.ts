@@ -1,28 +1,39 @@
 import { Request, Response } from "express";
-import { BadRequestError, NotFoundError } from "../middleware/error.js";
+import { BadRequestError, NotFoundError } from "../middlewares/error.js";
 import { createChirp, getChirpById, getChirps } from "../db/queries/chirps.js";
 import { Chirp, NewChirp } from "../db/schema.js";
+import { getBearerToken, validateJWT } from "../core/auth.js";
+import { config } from "../config.js";
 
 
 export async function handlerCreateChirp(req: Request, res: Response) {
-    const parsed = req.body as {body?: unknown, userId?: unknown};
 
-    if(typeof parsed.body !== 'string' || typeof parsed.userId !== 'string') 
+    // check params
+    const parsed = req.body as {body?: unknown};
+    if(typeof parsed.body !== 'string') 
         return res.status(400).json({ error: "Something went wrong" });
 
+    // check token
+    const token = getBearerToken(req);
+    const userId = validateJWT(token, config.jwt.secret);
+    if(!userId)
+        return res.status(401).json({ error: "Invalid token" });
+
+    // check body length
     if(parsed.body.length > 140)
         throw new BadRequestError("Chirp is too long. Max length is 140");
 
+    // check body for banned words
     const cleanedBody = parsed.body.trim().split(' ')
         .map(w => {
             const lw = w.toLowerCase();
             return lw === "kerfuffle" || lw === "sharbert" || lw === "fornax" ? "****" : w;
         }).join(' ');
     
-    const chirp: NewChirp = { body: cleanedBody, userId: parsed.userId };
-    const result = await createChirp(chirp);
-
-    return res.status(201).json(result);
+    // response
+    const chirp: NewChirp = { body: cleanedBody, userId: userId };
+    const response = await createChirp(chirp);
+    return res.status(201).json(response);
 }
 
 

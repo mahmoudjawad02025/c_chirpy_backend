@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "expires_in_seconds" timestamp DEFAULT '2026-10-02 19:48:33.964' NOT NULL;

@@ -13,7 +13,8 @@ function envOrThrow(key: string): string {
 
 export type APIConfig = { fileserverHits: number; port: number, platform: string };
 export type DBConfig = { url: string; migrationConfig: MigrationConfig };
-export type Config = { api: APIConfig; db: DBConfig };
+export type JWTConfig = { secret: string };
+export type Config = { api: APIConfig; db: DBConfig; jwt: JWTConfig };
 
 
 export const config: Config = {
@@ -22,4 +23,5 @@ export const config: Config = {
     url: envOrThrow("DB_URL"),
     migrationConfig: { migrationsFolder: "./src/db/migrations" },
   },
+  jwt: { secret: envOrThrow("JWT_SECRET")}
 };

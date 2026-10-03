@@ -5,12 +5,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
     "start": "node dist/index.js",
     "dev": "npx tsc && node dist/index.js",
     "db:generate": "npx drizzle-kit generate",
-    "db:migrate": "npx drizzle-kit migrate"
+    "db:migrate": "npx drizzle-kit migrate",
+    "test": "vitest --run"
   },
   "repository": {
     "type": "git",
@@ -24,15 +24,20 @@
   },
   "homepage": "https://github.com/mahmoudjawad02025/c_chirpy_backend#readme",
   "devDependencies": {
+    "@types/argon2": "^0.14.1",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.6.3",
     "@types/swagger-ui-express": "^4.1.8",
     "drizzle-kit": "^0.31.11",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^3.2.7"
   },
   "dependencies": {
+    "argon2": "^0.45.1",
     "drizzle-orm": "^0.45.3",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "postgres": "^3.4.9",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1"

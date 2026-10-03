@@ -22,6 +22,6 @@ export async function handlerResetRequestsCount(req: Request, res: Response) {
   config.api.fileserverHits = 0;
   await clearUsers();
   res.set("Content-Type", "text/plain; charset=utf-8");
-  res.send(`Hits: ${config.api.fileserverHits}`);
+  res.status(200).send(`Hits: ${config.api.fileserverHits}`);
 }
 

@@ -43,7 +43,7 @@ export function makeJWT(userID: string, expiresIn: number, secret: string): stri
 export function getBearerToken(req: Request): string{
 
     const authHeader = req?.headers.authorization;
-    if(!authHeader || !authHeader.startsWith("Bearer ")) {
+    if(!authHeader) {
         throw new UnauthorizedError("Missing or invalid Authorization header");
     }
     const token = authHeader?.split(" ")[1];

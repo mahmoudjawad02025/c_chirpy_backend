@@ -5,11 +5,11 @@ import { handlerReadiness } from "./handlers/health.js";
 import { handlerResetRequestsCount, handlerWriteRequestsCount } from "./handlers/metrics.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json' with { type: "json" };
-import { handlerCreateChirp, handlerGetChirpById, handlerGetChirps } from "./handlers/chirps.js";
+import { handlerCreateChirp, handlerDeleteChirp, handlerGetChirpById, handlerGetChirps } from "./handlers/chirps.js";
 import { errorHandler } from "./middlewares/error.js";
 import "./db/index.js";
 import { config } from "./config.js";
-import { handlerCreateUser } from "./handlers/users.js";
+import { handlerCreateUser, handlerUpdateUser, handlerUpgradeUserToChirpyRed } from "./handlers/users.js";
 import { handlerLogin, handlerRefreshToken, handlerRevokeToken } from "./handlers/auth.js";
 
 
@@ -27,20 +27,28 @@ app.use(middlewareLogResponses);
 app.use(appPath, middlewareMetricsInc, express.static("./src/app"));
 app.use(express.json()); // Built-in JSON body parsing middleware
 
- 
+
+// core
 app.get(apiPath + "/healthz", handlerReadiness);
 app.get(adminPath + "/metrics", handlerWriteRequestsCount);
 app.post(adminPath + "/reset", handlerResetRequestsCount);
-app.post(apiPath + "/users", handlerCreateUser);
-app.post(apiPath + "/chirps", handlerCreateChirp);
-app.get(apiPath + "/chirps", handlerGetChirps); 
-app.get(apiPath + "/chirps/:chirpId", handlerGetChirpById); 
+// auth
 app.post(apiPath + "/login", handlerLogin);
 app.post(apiPath + "/refresh", handlerRefreshToken); 
 app.post(apiPath + "/revoke", handlerRevokeToken); 
-  
+// others
+app.post(apiPath + "/users", handlerCreateUser);
+app.put(apiPath + "/users", handlerUpdateUser);
+app.post(apiPath + "/chirps", handlerCreateChirp);
+app.get(apiPath + "/chirps", handlerGetChirps); 
+app.get(apiPath + "/chirps/:chirpId", handlerGetChirpById); 
+app.delete(apiPath + "/chirps/:chirpId", handlerDeleteChirp); 
+app.post(apiPath + "/polka/webhooks", handlerUpgradeUserToChirpyRed);
 
+  
 app.use(errorHandler);
+
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - listen
 
 

@@ -41,13 +41,13 @@ export async function handlerLogin(req: Request, res: Response) {
         return res.status(500).json({ error: "Failed to create refresh token" });
     }
 
-
     // response
     const response = {
         id: user.id,
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        isChirpyRed: user.isChirpyRed,
         token: token,
         refreshToken: refreshToken,
     }

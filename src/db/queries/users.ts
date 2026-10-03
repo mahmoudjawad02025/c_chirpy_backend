@@ -12,6 +12,16 @@ export async function createUser(user: NewUser) {
   return result;
 }
 
+
+export async function updateUser(user: NewUser) {
+  const [result] = await db
+    .update(users)
+    .set(user)
+    .where(eq(users.id, user.id!))
+    .returning();
+  return result;
+}
+
  
 export async function clearUsers() {
   const [result] = await db.delete(users).returning();
@@ -24,6 +34,14 @@ export async function getUserByEmail(email: string) {
   return result;
 }
 
+
+export function upgradeUserToChirpyRed(id: string) {
+  return db
+    .update(users)
+    .set({ isChirpyRed: true })
+    .where(eq(users.id, id))
+    .returning();
+}
 
 // export async function setUserExpiresInSeconds(id: string, expiresInSeconds: number) {
 //   const [result] = await db

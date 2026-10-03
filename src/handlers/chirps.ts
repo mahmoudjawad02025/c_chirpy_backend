@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { BadRequestError, NotFoundError } from "../middlewares/error.js";
-import { createChirp, getChirpById, getChirps } from "../db/queries/chirps.js";
+import { BadRequestError, ForbiddenError, NotFoundError, UnauthorizedError } from "../middlewares/error.js";
+import { createChirp, deleteChirp, getChirpById, getChirps } from "../db/queries/chirps.js";
 import { Chirp, NewChirp } from "../db/schema.js";
 import { getBearerToken, validateJWT } from "../core/auth.js";
 import { config } from "../config.js";
@@ -51,4 +51,26 @@ export async function handlerGetChirpById(req: Request, res: Response) {
         throw new NotFoundError(`Chirp with id ${chirpId} not found`);
 
     return res.status(200).json(result);
+}
+
+
+
+export async function handlerDeleteChirp(req: Request, res: Response) {
+
+    // check token
+    const token = getBearerToken(req);
+    const userId = validateJWT(token, config.jwt.secret);
+    if(!userId)
+        throw new UnauthorizedError("Invalid token");
+
+    // check user ownership of chirp
+    const chirp = await getChirpById(req.params.chirpId as string);
+    if(!chirp)
+        throw new NotFoundError(`Chirp with id ${req.params.chirpId} not found`);
+    if(chirp.userId !== userId)
+        throw new ForbiddenError("You can only delete your own chirps");
+
+    // response
+    await deleteChirp(req.params.chirpId as string);
+    return res.sendStatus(204);
 }

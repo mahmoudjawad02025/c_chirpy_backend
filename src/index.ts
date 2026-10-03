@@ -11,6 +11,8 @@ import "./db/index.js";
 import { config } from "./config.js";
 import { handlerCreateUser, handlerUpdateUser, handlerUpgradeUserToChirpyRed } from "./handlers/users.js";
 import { handlerLogin, handlerRefreshToken, handlerRevokeToken } from "./handlers/auth.js";
+import path from "path";
+import { apiReference } from "@scalar/express-api-reference";
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - core
@@ -22,6 +24,7 @@ const adminPath = "/admin";
 const app = express();
 
 
+// apiDoc - swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(middlewareLogResponses);
 app.use(appPath, middlewareMetricsInc, express.static("./src/app"));
@@ -45,6 +48,12 @@ app.get(apiPath + "/chirps/:chirpId", handlerGetChirpById);
 app.delete(apiPath + "/chirps/:chirpId", handlerDeleteChirp); 
 app.post(apiPath + "/polka/webhooks", handlerUpgradeUserToChirpyRed);
 
+
+// apiDoc - scalar
+app.use("/reference", apiReference({ url: "/swagger.json", theme: "purple" }));
+app.get("/swagger.json", (req, res) => {
+  res.sendFile(path.resolve("swagger.json"));
+});
    
 app.use(errorHandler);
 

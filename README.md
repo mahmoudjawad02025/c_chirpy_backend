@@ -9,6 +9,8 @@ I built this repository as my own implementation of the Chirpy assignment from t
 - Run it with Node.js, a PostgreSQL database, and `npm run dev`. The sample env uses port `8080`.
 - This is a learning backend. It is not a deployed product, and it has no users.
 
+<br>
+
 <a id="contents"></a>
 
 ## 📋 Contents
@@ -30,6 +32,8 @@ I built this repository as my own implementation of the Chirpy assignment from t
 - [Docs](#docs)
 - [Contact](#contact)
 
+<br>
+
 <a id="what-this-is"></a>
 
 ## 🔎 What this is
@@ -37,6 +41,8 @@ I built this repository as my own implementation of the Chirpy assignment from t
 Chirpy stores users and short posts called chirps.
 
 A user can register, log in, change their own email and password, and delete their own chirps. Anyone can list chirps or read one by id. A webhook can mark a user as Chirpy Red when it receives a `user.upgraded` event and a matching API key. There is no route that sets Chirpy Red back to false.
+
+<br>
 
 <a id="stack"></a>
 
@@ -54,6 +60,8 @@ A user can register, log in, change their own email and password, and delete the
 | API pages | Swagger UI at `/api-docs`, Scalar at `/reference` |
 | Tests | Vitest `^3.2.7` |
 | License field | `ISC` in `package.json`. There is no `LICENSE` file. |
+
+<br>
 
 <a id="what-you-can-do"></a>
 
@@ -73,6 +81,8 @@ A user can register, log in, change their own email and password, and delete the
 - Read a plain `OK` from `GET /api/healthz`.
 - See an in-memory visit count for the static page at `GET /admin/metrics`.
 - In development only, reset that counter and delete every user with `POST /admin/reset`.
+
+<br>
 
 <a id="routes"></a>
 
@@ -110,6 +120,8 @@ On a route that reads the bearer token, a missing `Authorization` header returns
 
 There is no rate limit and no CORS middleware. The logger prints a `[NON-OK]` line for every status other than `200`, including `201` and `204`.
 
+<br>
+
 <a id="users"></a>
 
 ### Users
@@ -126,6 +138,8 @@ There is no rate limit and no CORS middleware. The logger prints a `[NON-OK]` li
 
 Same body as create. Requires an access token. `200` returns the same user fields. Both email and password are required. There is no route to change only one of them. If the new email is already stored, the database unique constraint fails and the client receives `500`. There is no route to read a user by id.
 
+<br>
+
 <a id="session"></a>
 
 ### Session
@@ -141,6 +155,8 @@ No body. Send the refresh token as the bearer value. `200` returns `{ "token": "
 **Revoke** `POST /api/revoke`
 
 No body. Send the refresh token as the bearer value. `204` on success. The same three `401` messages as refresh apply. The row stays in the database with `revoked_at` set.
+
+<br>
 
 <a id="chirps"></a>
 
@@ -172,6 +188,8 @@ Optional query: `authorId` (user UUID) and `sort`. `sort=desc` is newest first. 
 
 `403` with `"You can only delete your own chirps"` when the token's user is not the author. `404` when the chirp does not exist. `401` when the access token is missing or invalid.
 
+<br>
+
 <a id="webhook"></a>
 
 ### Webhook
@@ -186,6 +204,8 @@ Optional query: `authorId` (user UUID) and `sort`. `sort=desc` is newest first. 
 ```
 
 When a bearer value is present and it is not equal to `POLKA_UPGRADE_KEY`, the handler returns `401` with `"Invalid API key"`. Any `event` other than `user.upgraded` returns `204` and changes nothing. `user.upgraded` sets `is_chirpy_red` to `true` for that user and returns `204`. A missing user returns `404` with `"User not found"`. A malformed body returns `400` with `"Invalid request body"`. Nothing in this API sets `is_chirpy_red` back to `false`.
+
+<br>
 
 <a id="admin"></a>
 
@@ -211,6 +231,8 @@ Serves `src/app/index.html`, a single heading. Requests under `/app` are what in
 
 These open the generated docs. The live paths are the table above. Details are in [Docs](#docs).
 
+<br>
+
 <a id="auth"></a>
 
 ## 🔐 Auth
@@ -222,6 +244,8 @@ Access tokens are JWTs signed with `JWT_SECRET`. The payload has `iss: "chirpy"`
 Refresh tokens are 32 random bytes, hex-encoded (64 characters). They are stored in `refresh_tokens` as plaintext, with `expires_at` set to 60 days ahead. Revoke sets `revoked_at`. It does not delete the row. Login creates a new refresh token each time. Older ones stay valid until they expire or are revoked.
 
 `getBearerToken` requires an `Authorization` header and uses the second space-separated word. `Bearer <value>` is the shape the routes expect.
+
+<br>
 
 <a id="data"></a>
 
@@ -260,6 +284,8 @@ PostgreSQL. Drizzle schema: `src/db/schema.ts`. SQL migrations: `src/db/migratio
 
 Email is stored as submitted. `User@Example.com` and `user@example.com` are different rows. The handler does not check that the string contains `@`.
 
+<br>
+
 <a id="run-it"></a>
 
 ## 🚀 Run it
@@ -297,6 +323,8 @@ npm start
 
 `npm start` runs the already built `dist/index.js`. It does not compile.
 
+<br>
+
 <a id="layout"></a>
 
 ## 📁 Layout
@@ -319,6 +347,8 @@ swagger.cjs                  swagger-autogen script
 drizzle.config.ts
 ```
 
+<br>
+
 <a id="tests"></a>
 
 ## 🧪 Tests
@@ -326,6 +356,8 @@ drizzle.config.ts
 `npm test` runs Vitest once (`vitest --run`).
 
 `src/tests/auth.test.ts` has one assertion: Argon2 verification returns `true` for the password that was hashed. It does not check a wrong password. It does not call HTTP routes, the database, or token code.
+
+<br>
 
 <a id="docs"></a>
 
@@ -340,6 +372,8 @@ The route table in this file is the source of truth.
   - [swagger.json](http://localhost:8080/swagger.json)
 
 `docs/api_doc.md` and `swagger.json` are generated. They use paths such as `apiPath/...`, `/api/metrics`, and `/api/reset`, and they use port `3000`. The live admin paths are `/admin/metrics` and `/admin/reset`. Authenticated routes in the table above require a token.
+
+<br>
 
 <a id="contact"></a>
 

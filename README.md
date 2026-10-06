@@ -8,7 +8,7 @@ I built this repository as my own implementation of the Chirpy assignment from t
 - A request goes from a route in `src/index.ts`, to a handler, to a query, to the Drizzle schema.
 - Run it with Node.js, a PostgreSQL database, and `npm run dev`. The sample env uses port `8080`.
 - This is a learning backend. It is not a deployed product, and it has no users.
-- A clean, modular structure: routes, handlers, auth, and database queries are in separate folders, so each part is easy to find and change.
+- A clean, modular structure: routes, handlers, auth, and database queries are separated into their own files and folders, so each part is easy to find and change.
 
 <br>
 
@@ -350,7 +350,7 @@ swagger.cjs                  swagger-autogen script
 drizzle.config.ts
 ```
 
-The code is modular: each folder has one job, which keeps the project clean and easy to extend.
+The code is modular: Each file or folder has one job, which keeps the project clean and easy to extend.
 
 <br>
 

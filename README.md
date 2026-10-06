@@ -8,6 +8,7 @@ I built this repository as my own implementation of the Chirpy assignment from t
 - A request goes from a route in `src/index.ts`, to a handler, to a query, to the Drizzle schema.
 - Run it with Node.js, a PostgreSQL database, and `npm run dev`. The sample env uses port `8080`.
 - This is a learning backend. It is not a deployed product, and it has no users.
+- A clean, modular structure: routes, handlers, auth, and database queries are in separate folders, so each part is easy to find and change.
 
 <br>
 
@@ -81,6 +82,8 @@ A user can register, log in, change their own email and password, and delete the
 - Read a plain `OK` from `GET /api/healthz`.
 - See an in-memory visit count for the static page at `GET /admin/metrics`.
 - In development only, reset that counter and delete every user with `POST /admin/reset`.
+
+Built with a clean, modular design that includes Argon2 password hashing, JWT access tokens, revocable refresh tokens, and database migrations on startup.
 
 <br>
 
@@ -346,6 +349,8 @@ swagger.json                 generated OpenAPI, paths are not the real URLs
 swagger.cjs                  swagger-autogen script
 drizzle.config.ts
 ```
+
+The code is modular: each folder has one job, which keeps the project clean and easy to extend.
 
 <br>
 
